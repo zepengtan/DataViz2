@@ -1,0 +1,89 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {"url": "data/Abortion_StackedBarData.csv"},
+    "height" : 300,
+    "width": 550,
+    "params" : [
+      {
+        "name" : "Region_selection",
+        "bind": {
+          "input" : "select",
+          "options" : [
+            null, "West", "South", "Northeast", "Midwest"
+          ],
+          "labels" : [
+            "Show All", "West", "South", "Northeast", "Midwest"
+          ],
+          "name" : "Region Selection  "
+        }
+      }
+    ], 
+    "transform" : [
+      {"filter" : "Region_selection == null || datum.Region == Region_selection"},
+      {
+        "calculate" : "indexof(['<15', '15-17', '18-19', '20-24', '25-29', '30-34', '35-39', '>40'], datum.variable)",
+        "as": "order"
+      }
+    ],
+    "layer" : [
+      {
+        "mark": "bar",
+        "encoding": {
+        "x": {
+        "field": "State",
+        "type": "ordinal",
+        "title": "States of USA"
+      },
+      "y": {
+        "aggregate": "sum",
+        "type": "quantitative",
+        "field" : "value",
+        "title" : "Value"
+      },
+      "color": {
+        "field": "variable",
+        "title": "Age Group",
+        "scale" : {
+          "domain" : ["<15", "15-17", "18-19", "20-24", "25-29", "30-34", "35-39", ">40"],
+          "range": [
+            "#0077bb",
+            "#33bbee",
+            "#009988",
+            "#999933",
+            "#ddcc77",
+            "#ee7733",
+            "#cc3311",
+            "#ee3377"
+          ]
+        }
+      },
+      "tooltip": [
+        {"field" : "State", "type" : "ordinal"},
+        {"field" : "Region", "type" : "ordinal"},
+        {"field" : "variable", "type" : "nominal", "title" : "Age Group"},
+        {"field" : "value", "type" : "quantitative"}
+      ],
+      "order" : {"field" : "order", "type" : "ordinal"}
+        }
+      },
+      {
+        "mark" : {
+          "type" : "text",
+          "align" : "right",
+          "baseline" : "bottom",
+          "dx" : 250,
+          "dy": -100,
+          "text" : ["The rate of abortion cases is", "greater for age ranging from", "18 to 29."]
+        }
+
+        }
+    ],
+    "config" : {
+      "background" : "#f6f1ea",
+      "axis" : {
+        "labelColor" : "#75767b",
+        "titleColor": "#55565b"
+    },
+    "legend": {"disable" : true}
+    }
+  }
